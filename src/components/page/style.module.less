@@ -1,0 +1,37 @@
+@import '../../styles/variables';
+
+.header {
+  &.contained {
+    @media (min-width: 1200px) {
+      margin-top: 3rem;
+    }
+  }
+  :global(.ant-page-header-heading) {
+    align-items: baseline;
+  }
+  :global(.ant-page-header-heading-left) {
+    min-width: fit-content;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  :global(.ant-page-header-heading-title) {
+    font-size: 1.7rem;
+    color: @primary-color
+  }
+  :global(.ant-page-header-heading-sub-title) {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+  }
+  :global(.ant-page-header-footer) {
+    margin-bottom: 1rem !important;
+  }
+  @media (max-width: 992px) {
+    :global(.ant-page-header-footer) {
+      margin-top: 1rem !important;
+    }
+  }
+}
+
+.page {
+  padding: 0 1.5rem 4rem;
+}

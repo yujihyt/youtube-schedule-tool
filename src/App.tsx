@@ -1,6 +1,7 @@
 import { List, Skeleton, Table, Anchor} from 'antd';
 import dayjs from 'dayjs';
 import React, { Suspense } from 'react';
+import { Filter } from './components/filter';
 import { Page } from './components/page';
 import { mockedResponse } from './mocked/mocked-response';
 import { sortVideos } from './utils/sort-videos';
@@ -9,11 +10,10 @@ const {Link} = Anchor;
 
 const App: React.FC = () => {
   const videos = sortVideos(mockedResponse);
-  console.log(videos);
   return (
     <Page title="Youtube Scheduler">
       <Suspense fallback={<Skeleton />}>
-        {/* <Filter filterControls={filterControls} /> */}
+        <Filter/>
       </Suspense>
       <Table
         bordered

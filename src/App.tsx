@@ -1,12 +1,15 @@
-import { Skeleton, Table } from 'antd';
+import { List, Skeleton, Table, Anchor} from 'antd';
+import dayjs from 'dayjs';
 import React, { Suspense } from 'react';
 import { Page } from './components/page';
 import { mockedResponse } from './mocked/mocked-response';
 import { sortVideos } from './utils/sort-videos';
 
+const {Link} = Anchor;
+
 const App: React.FC = () => {
   const videos = sortVideos(mockedResponse);
-  console.log(JSON.stringify(videos));
+  console.log(videos);
   return (
     <Page title="Youtube Scheduler">
       <Suspense fallback={<Skeleton />}>
@@ -15,19 +18,31 @@ const App: React.FC = () => {
       <Table
         bordered
         rowKey="id"
+        dataSource={videos}
       >
-        <Table.Column title="Date" dataIndex={["date"]} ellipsis />
-        <Table.Column title="Number of Videos" dataIndex={["number"]} ellipsis width={200}/>
+        <Table.Column title="Date" dataIndex="date" key="date" ellipsis render={(date: string) => dayjs(date).format("DD/MM/YYYY")}/>
+        <Table.Column title="Number of Videos" dataIndex="numberOfVideos" key="numberOfVideos" ellipsis width={200} render={(numberOfVideos: number) => numberOfVideos}/>
         <Table.Column
           title="Videos"
           dataIndex="videos"
+          key="videos"
           responsive={["md"]}
+          render={(videos) => {
+            return (<List
+              size="small"
+              bordered
+              dataSource={videos}
+              renderItem={(item:string) => <Link href={`https://youtube.com/watch?w=${item}`} title={item} target="_blank"></Link>}
+            />)
+          }}
         />
         <Table.Column
           title="Total Duration"
-          dataIndex="duration"
+          dataIndex="totalDuration"
+          key="totalDuration"
           responsive={["lg"]}
           ellipsis
+          render={(totalDuration:number) => `${totalDuration} minutes`}
         />
       </Table>
     </Page>

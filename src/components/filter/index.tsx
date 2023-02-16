@@ -1,5 +1,6 @@
 import { InputNumber, Input, Button } from 'antd';
 import { useState } from 'react';
+import { WeekDayInput } from '../weekday-input';
 
 export function Filter() {
   const initialState = {
@@ -27,74 +28,19 @@ export function Filter() {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: 16 }}>Sunday</span>
-        <InputNumber
-          placeholder="0"
-          min={0}
-          style={{ marginRight: 16 }}
-          onChange={(value) => handleFilterChange({ sunday: value })}
-        />
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: 16 }}>Monday:</span>
-        <InputNumber
-          placeholder="0"
-          min={0}
-          style={{ marginRight: 16 }}
-          onChange={(value) => handleFilterChange({ monday: value })}
-        />
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: 16 }}>Tuesday:</span>
-        <InputNumber
-          placeholder="0"
-          min={0}
-          style={{ marginRight: 16 }}
-          onChange={(value) => handleFilterChange({ tuesday: value })}
-        />
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: 16 }}>Wednesday:</span>
-        <InputNumber
-          placeholder="0"
-          min={0}
-          style={{ marginRight: 16 }}
-          onChange={(value) => handleFilterChange({ wednesday: value })}
-        />
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: 16 }}>Thursday:</span>
-        <InputNumber
-          placeholder="0"
-          min={0}
-          style={{ marginRight: 16 }}
-          onChange={(value) => handleFilterChange({ thursday: value })}
-        />
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: 16 }}>Friday:</span>
-        <InputNumber
-          placeholder="0"
-          min={0}
-          style={{ marginRight: 16 }}
-          onChange={(value) => handleFilterChange({ friday: value })}
-        />
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: 16 }}>Saturday:</span>
-        <InputNumber
-          placeholder="0"
-          min={0}
-          style={{ marginRight: 16 }}
-          onChange={(value) => handleFilterChange({ saturday: value })}
-        />
-        <Input
+      <WeekDayInput title="Sunday" onChange={(value:number) => handleFilterChange({ sunday: value })}/>
+      <WeekDayInput title="Monday" onChange={(value:number) => handleFilterChange({ monday: value })}/>
+      <WeekDayInput title="Tuesday" onChange={(value:number) => handleFilterChange({ tuesday: value })}/>
+      <WeekDayInput title="Wednesday" onChange={(value:number) => handleFilterChange({ wednesday: value })}/>
+      <WeekDayInput title="Thursday" onChange={(value:number) => handleFilterChange({ thursday: value })}/>
+      <WeekDayInput title="Friday" onChange={(value:number) => handleFilterChange({ friday: value })}/>
+      <WeekDayInput title="Saturday" onChange={(value:number) => handleFilterChange({ saturday: value })}/>
+
+      <Input
           placeholder="Type your search"
           style={{ width: 200, marginLeft: 16 }}
           onChange={(event) => handleFilterChange({ keyword: event.target.value })}
         />
-      </div>
       <Button style={{ marginLeft: 16 }} onClick={handleFilterButtonClick}>Filter</Button>
     </div>
   );

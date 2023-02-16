@@ -42,7 +42,7 @@ const App: React.FC = () => {
           key="totalDuration"
           responsive={["lg"]}
           ellipsis
-          render={(totalDuration:number) => `${totalDuration} minutes`}
+          render={(totalDuration:number) => `${totalDuration} seconds`}
         />
       </Table>
     </Page>

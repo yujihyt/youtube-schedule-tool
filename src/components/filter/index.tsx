@@ -1,5 +1,4 @@
 import { Input, Button } from 'antd';
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { mockedResponse } from '../../mocked/mocked-response';
 import { sortVideos } from '../../utils/sort-videos';

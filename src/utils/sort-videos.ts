@@ -1,96 +1,55 @@
-interface Duration {
-    hour: number;
-    minute: number;
-    second: number;
-  }
-  
-  interface Video {
-    id: string;
-    duration: Duration;
-  }
-  
-  interface Day {
-    date: Date;
-    numberOfVideos: number;
-    videos: string[];
-    totalDuration: number;
-  }
-  
-  interface DaysOfWeek {
-    [key: string]: number;
-    sunday: number;
-    monday: number;
-    tuesday: number;
-    wednesday: number;
-    thursday: number;
-    friday: number;
-    saturday: number;
-  }
-  
-  const daysOfWeek: DaysOfWeek = {
-    sunday: 60,
-    monday: 60,
-    tuesday: 60,
-    wednesday: 60,
-    thursday: 60,
-    friday: 60,
-    saturday: 60,
-  };
-  
-  export const sortVideos = (mockedResponse: Video[]): Day[] => {
-    const {highestValue} = findMaxTimeInWeek(daysOfWeek);
-    const daysOfWeekKeys = Object.keys(daysOfWeek);
-    return mockedResponse.reduce((days: Day[], video: Video) => {
-      const { hour, minute, second } = video.duration;
-      const videoTime = 3600 * hour + minute * 60 + second;
-      if(videoTime>highestValue*60) return days;
-  
-      let dayAllocated = false;
-      for (let i = 0; i < daysOfWeekKeys.length && !dayAllocated; i++) {
-        const currentDay = daysOfWeekKeys[i];
-        const currentDayDuration = daysOfWeek[currentDay];
-        if (videoTime <= currentDayDuration * 60) {
-          let lastDay = days[days.length - 1];
-          if (!lastDay || (lastDay.totalDuration + videoTime) > currentDayDuration * 60) {
-            lastDay = {
-              date: new Date(),
-              numberOfVideos: 0,
-              videos: [],
-              totalDuration: 0,
-            };
-            days.push(lastDay);
-          }
-          lastDay.videos.push(video.id);
-          lastDay.numberOfVideos++;
-          lastDay.totalDuration += videoTime;
-          dayAllocated = true;
+import dayjs from 'dayjs';
+import { Video } from '../interfaces/video.interface';
+import { Day } from './daily-response.interface';
+import { DaysOfWeek } from './day-of-week.interface';
+
+export const sortVideos = (videos: Video[], daysOfWeek: DaysOfWeek): Day[] => {
+  const initialDays: Day[] = [];
+  const values = Object.values(daysOfWeek);
+  const maxValue = Math.max(...values);
+
+  return videos.reduce((accumulator: Day[], current: Video) => {
+    const {hour, minute, second} = current.duration;
+    const videoDuration = hour * 3600 + minute * 60 + second;
+    if(videoDuration > maxValue*60) return accumulator;
+    let currentDay = accumulator.length > 0 ?
+    accumulator[accumulator.length - 1] :
+    {
+      date: dayjs().toDate(),
+      dayOfWeek: dayjs().format('dddd'),
+      numberOfVideos: 0,
+      videos: [],
+      totalDuration: 0,
+    };
+    while(!currentDay.videos.includes(current.id)){
+      const dailyLimit = daysOfWeek[dayjs(currentDay.date).format('dddd').toLowerCase()]*60;
+      if(videoDuration + currentDay.totalDuration > dailyLimit){
+        currentDay = {
+          date: dayjs(currentDay.date).add(1, 'day').toDate(),
+          dayOfWeek: dayjs(currentDay.date).add(1, 'day').format("dddd"),
+          numberOfVideos: 0,
+          videos: [],
+          totalDuration:0,
+        }
+        const index = accumulator.findIndex(day => day.date.getTime() === currentDay.date.getTime());
+        if (index === -1) {
+          accumulator.push(currentDay);
+        } else {
+          accumulator[index] = currentDay;
         }
       }
-  
-      if (!dayAllocated) {
-        const newDay: Day = {
-          date: new Date(),
-          numberOfVideos: 1,
-          videos: [video.id],
-          totalDuration: videoTime,
-        };
-        days.push(newDay);
+      else {
+        currentDay = {
+          date: currentDay.date,
+          dayOfWeek: currentDay.dayOfWeek,
+          numberOfVideos: currentDay.numberOfVideos + 1,
+          videos: [...currentDay.videos, current.id],
+          totalDuration: currentDay.totalDuration + videoDuration,
+        }
+        const index = accumulator.findIndex(day => day.date.getTime() === currentDay.date.getTime());
+        accumulator[index] = currentDay;
       }
-  
-      return days;
-    }, []);
-  };
-
-
-  const findMaxTimeInWeek = (daysOfWeek:DaysOfWeek) => {
-    let highestValue = 0;
-    let highestDay = "";
-
-    for (const [day, value] of Object.entries(daysOfWeek)) {
-    if (value > highestValue) {
-        highestValue = value;
-        highestDay = day;
     }
-    }
-    return {highestDay, highestValue};
-  }
+    return accumulator;
+  }, initialDays);
+};

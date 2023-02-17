@@ -1,29 +1,26 @@
-import { InputNumber, Input, Button } from 'antd';
+import { Input, Button } from 'antd';
+import dayjs from 'dayjs';
 import { useState } from 'react';
+import { mockedResponse } from '../../mocked/mocked-response';
+import { sortVideos } from '../../utils/sort-videos';
 import { WeekDayInput } from '../weekday-input';
 
-export function Filter() {
-  const initialState = {
-    sunday: 0,
-    monday: 0,
-    tuesday: 0,
-    wednesday: 0,
-    thursday: 0,
-    friday: 0,
-    saturday: 0,
-    keyword: "",
-  };
-
-  const [filters, setFilters] = useState(initialState);
+export function Filter({ setVideos, setDaysOfWeek, daysOfWeek }: { setVideos: React.Dispatch<React.SetStateAction<any>>, setDaysOfWeek: React.Dispatch<React.SetStateAction<any>>, daysOfWeek: any }) {
+  const [keyword, setKeyword] = useState('');
 
   const handleFilterChange = (changedFilters: any) => {
-    setFilters((prevFilters) => {
-      return { ...prevFilters, ...changedFilters };
+    setDaysOfWeek((prevFilters: any) => {
+      const newFilters = { ...prevFilters, ...changedFilters };
+      setVideos(sortVideos(mockedResponse, newFilters));
+      return newFilters;
     });
+    if (changedFilters.keyword !== undefined) {
+      setKeyword(changedFilters.keyword);
+    }
   };
 
   const handleFilterButtonClick = () => {
-    // apply filters here
+    setVideos(sortVideos(mockedResponse, daysOfWeek));
   };
 
   return (
@@ -37,10 +34,10 @@ export function Filter() {
       <WeekDayInput title="Saturday" onChange={(value:number) => handleFilterChange({ saturday: value })}/>
 
       <Input
-          placeholder="Type your search"
-          style={{ width: 200, marginLeft: 16 }}
-          onChange={(event) => handleFilterChange({ keyword: event.target.value })}
-        />
+        placeholder="Type your search"
+        style={{ width: 200, marginLeft: 16 }}
+        onChange={(event) => handleFilterChange({ keyword: event.target.value })}
+      />
       <Button style={{ marginLeft: 16 }} onClick={handleFilterButtonClick}>Filter</Button>
     </div>
   );

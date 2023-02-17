@@ -13,14 +13,14 @@ export const sortVideos = (videos: Video[], daysOfWeek: DaysOfWeek): Day[] => {
     const videoDuration = hour * 3600 + minute * 60 + second;
     if(videoDuration > maxValue*60) return accumulator;
     let currentDay = accumulator.length > 0 ?
-    accumulator[accumulator.length - 1] :
-    {
-      date: dayjs().toDate(),
-      dayOfWeek: dayjs().format('dddd'),
-      numberOfVideos: 0,
-      videos: [],
-      totalDuration: 0,
-    };
+      accumulator[accumulator.length - 1] :
+      {
+        date: dayjs().toDate(),
+        dayOfWeek: dayjs().format('dddd'),
+        numberOfVideos: 0,
+        videos: [],
+        totalDuration: 0,
+      };
     while(!currentDay.videos.includes(current.id)){
       const dailyLimit = daysOfWeek[dayjs(currentDay.date).format('dddd').toLowerCase()]*60;
       if(videoDuration + currentDay.totalDuration > dailyLimit){
@@ -31,12 +31,6 @@ export const sortVideos = (videos: Video[], daysOfWeek: DaysOfWeek): Day[] => {
           videos: [],
           totalDuration:0,
         }
-        const index = accumulator.findIndex(day => day.date.getTime() === currentDay.date.getTime());
-        if (index === -1) {
-          accumulator.push(currentDay);
-        } else {
-          accumulator[index] = currentDay;
-        }
       }
       else {
         currentDay = {
@@ -46,7 +40,11 @@ export const sortVideos = (videos: Video[], daysOfWeek: DaysOfWeek): Day[] => {
           videos: [...currentDay.videos, current.id],
           totalDuration: currentDay.totalDuration + videoDuration,
         }
-        const index = accumulator.findIndex(day => day.date.getTime() === currentDay.date.getTime());
+      }
+      const index = accumulator.findIndex(day => day.date.getTime() === currentDay.date.getTime());
+      if (index === -1) {
+        accumulator.push(currentDay);
+      } else {
         accumulator[index] = currentDay;
       }
     }

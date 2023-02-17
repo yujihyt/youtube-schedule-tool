@@ -47,7 +47,7 @@ const App: React.FC = () => {
               size="small"
               bordered
               dataSource={videos}
-              renderItem={(item:string) => <Link href={`https://youtube.com/watch?w=${item}`} title={item} target="_blank"></Link>}
+              renderItem={(item:string) => <Link href={`https://youtube.com/watch?v=${item}`} title={item} target="_blank"></Link>}
             />)
           }}
         />

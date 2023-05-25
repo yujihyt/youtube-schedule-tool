@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { Video } from '../interfaces/video.interface';
-import { Day } from './daily-response.interface';
-import { DaysOfWeek } from './day-of-week.interface';
+import { Day } from '../interfaces/daily-response.interface';
+import { DaysOfWeek } from '../interfaces/day-of-week.interface';
 
 export const sortVideos = (videos: Video[], daysOfWeek: DaysOfWeek): Day[] => {
   const initialDays: Day[] = [];

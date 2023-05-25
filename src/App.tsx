@@ -21,12 +21,13 @@ const initialState = {
 
 const App: React.FC = () => {
   const [daysOfWeek, setDaysOfWeek] = useState(initialState);
+  const [keyword, setKeyword] = useState('');
   const [videos, setVideos] = useState(sortVideos(mockedResponse, daysOfWeek));
-  
+
   return (
     <Page title="Youtube Scheduler">
       <Suspense fallback={<Skeleton />}>
-        <Filter setVideos={setVideos} setDaysOfWeek={setDaysOfWeek} daysOfWeek={daysOfWeek} />
+        <Filter setVideos={setVideos} setDaysOfWeek={setDaysOfWeek} setKeyword={setKeyword} daysOfWeek={daysOfWeek} keyword={keyword}/>
       </Suspense>
       <Title level={4}>It would take {videos.length} days to finish the list</Title>
       <Table

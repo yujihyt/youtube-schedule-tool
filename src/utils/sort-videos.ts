@@ -41,6 +41,7 @@ export const sortVideos = (videos: Video[], daysOfWeek: DaysOfWeek): Day[] => {
           totalDuration: currentDay.totalDuration + videoDuration,
         }
       }
+      // eslint-disable-next-line no-loop-func
       const index = accumulator.findIndex(day => day.date.getTime() === currentDay.date.getTime());
       if (index === -1) {
         accumulator.push(currentDay);

@@ -3,23 +3,36 @@ import { useState } from 'react';
 import { mockedResponse } from '../../mocked/mocked-response';
 import { sortVideos } from '../../utils/sort-videos';
 import { WeekDayInput } from '../weekday-input';
+import { api } from '../../providers/youtube-schedule-generator';
+import { Video } from '../../interfaces/video.interface';
 
-export function Filter({ setVideos, setDaysOfWeek, daysOfWeek }: { setVideos: React.Dispatch<React.SetStateAction<any>>, setDaysOfWeek: React.Dispatch<React.SetStateAction<any>>, daysOfWeek: any }) {
-  const [keyword, setKeyword] = useState('');
+export function Filter(
+  { setVideos, setDaysOfWeek, setKeyword, daysOfWeek, keyword }:
+  { setVideos: React.Dispatch<React.SetStateAction<any>>,
+    setDaysOfWeek: React.Dispatch<React.SetStateAction<any>>, 
+    setKeyword: React.Dispatch<React.SetStateAction<any>>,
+    daysOfWeek: any,
+    keyword: string }) {
+  const [apiVideos, setApiVideos] = useState<Video[]>([]);
 
   const handleFilterChange = (changedFilters: any) => {
-    setDaysOfWeek((prevFilters: any) => {
-      const newFilters = { ...prevFilters, ...changedFilters };
-      setVideos(sortVideos(mockedResponse, newFilters));
-      return newFilters;
-    });
-    if (changedFilters.keyword !== undefined) {
+    if (changedFilters.keyword) {
       setKeyword(changedFilters.keyword);
+    }
+    else{
+      setDaysOfWeek((prevFilters: any) => {
+        const newFilters = { ...prevFilters, ...changedFilters };
+        setVideos(sortVideos(apiVideos, newFilters));
+        return newFilters;
+      });
     }
   };
 
-  const handleFilterButtonClick = () => {
-    setVideos(sortVideos(mockedResponse, daysOfWeek));
+  const handleFilterButtonClick = async () => {
+    const responseVideos:{data:Video[]} = keyword ? await api.get(`search?searchTerm=${keyword}`) : {data:[]};
+    const {data} = responseVideos;
+    setApiVideos(data);
+    setVideos(sortVideos(data, daysOfWeek));
   };
 
   return (
